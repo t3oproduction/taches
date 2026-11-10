@@ -11,18 +11,19 @@
     --green: #059669; --green-bg: #ecfdf5; --green-bd: #a7f3d0;
     --amber: #d97706; --amber-bg: #fffbeb; --amber-bd: #fde68a;
     --gray-act: #4b5563; --gray-bg: #f9fafb; --gray-bd: #e5e7eb;
-    --dark: #111827;
+    --red: #dc2626; --dark: #111827;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); max-width: 480px; margin: 0 auto; padding-bottom: 90px; }
+
   #pinGate { position: fixed; inset: 0; z-index: 99; background: #f5f5f4; display: flex; align-items: center; justify-content: center; }
   #pinGate .pinBox { width: 85%; max-width: 340px; text-align: center; }
   #pinGate h2 { font-size: 19px; font-weight: 800; margin-bottom: 6px; }
-  #pinGate p { font-size: 13px; color: #6b7280; margin-bottom: 18px; }
-  #pinGate input { width: 100%; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; font-size: 18px; text-align: center; letter-spacing: .2em; margin-bottom: 10px; outline: none; }
-  #pinGate input:focus { border-color: #111827; }
-  #pinGate button { width: 100%; border: none; border-radius: 12px; padding: 14px; font-size: 14px; font-weight: 800; background: #111827; color: #fff; }
+  #pinGate p { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+  #pinGate input { width: 100%; border: 1px solid var(--border); border-radius: 12px; padding: 14px; font-size: 18px; text-align: center; letter-spacing: .2em; margin-bottom: 10px; outline: none; }
+  #pinGate input:focus { border-color: var(--dark); }
+  #pinGate button { width: 100%; border: none; border-radius: 12px; padding: 14px; font-size: 14px; font-weight: 800; background: var(--dark); color: #fff; }
   #pinGate .err { color: #ef4444; font-size: 12px; margin-top: 8px; display: none; }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); max-width: 480px; margin: 0 auto; padding-bottom: 110px; }
 
   header { position: sticky; top: 0; z-index: 10; background: rgba(255,255,255,.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); padding: 18px 16px 12px; }
   .date { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--faint); font-weight: 600; }
@@ -35,11 +36,14 @@
   .chip { flex-shrink: 0; border: none; border-radius: 999px; padding: 7px 13px; font-size: 12px; font-weight: 600; background: #f1f2f4; color: var(--muted); cursor: pointer; }
   .chip.active { background: var(--dark); color: #fff; }
 
+  #banniere { display: none; margin: 12px 16px 0; padding: 10px 14px; border-radius: 12px; background: var(--amber-bg); border: 1px solid var(--amber-bd); color: var(--amber); font-size: 13px; font-weight: 600; }
+
   main { padding: 14px 16px 0; }
   .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,.04); transition: all .25s; }
   .card.fait { background: var(--green-bg); border-color: var(--green-bd); }
   .card.plusTard { background: var(--amber-bg); border-color: var(--amber-bd); }
   .card.nonPertinent { background: var(--gray-bg); opacity: .6; }
+  .card.erreur { border-color: #fecaca; box-shadow: 0 0 0 1px #fecaca; }
   .row { display: flex; gap: 10px; align-items: flex-start; }
   .dot { width: 12px; height: 12px; border-radius: 999px; flex-shrink: 0; margin-top: 4px; }
   .dot.A { background: #ef4444; } .dot.B { background: #f59e0b; } .dot.C { background: #9ca3af; }
@@ -49,6 +53,8 @@
   .tag { font-size: 11px; border-radius: 999px; padding: 2px 8px; font-weight: 500; }
   .tag.dom { background: #eef2ff; color: #4338ca; }
   .tag.prio { background: #f1f2f4; color: var(--muted); }
+  .syncerr { display: none; margin-top: 8px; font-size: 12px; color: var(--red); font-weight: 600; }
+  .card.erreur .syncerr { display: block; }
 
   .actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 12px; }
   .btn { border-radius: 12px; padding: 12px 4px; font-size: 13px; font-weight: 700; border: 1px solid; cursor: pointer; transition: transform .1s; }
@@ -62,14 +68,13 @@
 
   .section-btn { background: none; border: none; color: var(--muted); font-size: 12px; font-weight: 600; margin: 14px 0 8px; cursor: pointer; padding: 0; }
   .empty { text-align: center; color: var(--faint); font-size: 14px; padding: 32px 0; }
+  #chargement { text-align: center; color: var(--faint); font-size: 14px; padding: 40px 0; }
 
   footer { position: fixed; bottom: 0; left: 0; right: 0; z-index: 20; }
-  .footer-inner { max-width: 480px; margin: 0 auto; background: #fff; border-top: 1px solid var(--border); padding: 12px 16px; box-shadow: 0 -4px 12px rgba(0,0,0,.06); }
-  .sync-msg { text-align: center; font-size: 12px; font-weight: 600; margin-bottom: 8px; }
-  .sync-msg.attente { color: var(--amber); } .sync-msg.ok { color: var(--faint); }
-  #syncBtn { width: 100%; border: none; border-radius: 12px; padding: 14px; font-size: 14px; font-weight: 800; background: #f1f2f4; color: var(--faint); cursor: pointer; transition: transform .1s; }
-  #syncBtn.actif { background: var(--dark); color: #fff; }
-  #syncBtn:active { transform: scale(.97); }
+  .footer-inner { max-width: 480px; margin: 0 auto; background: #fff; border-top: 1px solid var(--border); padding: 10px 16px; box-shadow: 0 -4px 12px rgba(0,0,0,.06); text-align: center; }
+  #syncStatus { font-size: 12px; font-weight: 600; color: var(--faint); }
+  #syncStatus.ok { color: var(--green); }
+  #syncStatus.ko { color: var(--red); }
 </style>
 </head>
 <body>
@@ -109,14 +114,17 @@
 </script>
 
 <header>
-  <div class="date">Mardi 10 novembre 2026</div>
+  <div class="date" id="dateTitre">Mardi 10 novembre 2026</div>
   <h1>Tâches du jour</h1>
   <div class="counters"><span id="nbFaites"></span><span id="nbActives"></span></div>
   <div class="progress"><div id="barre"></div></div>
   <div class="filters" id="filtres"></div>
 </header>
 
+<div id="banniere">Hors ligne — liste de secours de ce matin. Tes validations seront envoyées dès que la connexion revient.</div>
+
 <main>
+  <div id="chargement">Chargement des tâches…</div>
   <div id="listeActives"></div>
   <button class="section-btn" id="btnTraitees" style="display:none"></button>
   <div id="listeTraitees"></div>
@@ -125,13 +133,18 @@
 
 <footer>
   <div class="footer-inner">
-    <div class="sync-msg" id="syncMsg">Tout est synchronisé</div>
-    <button id="syncBtn" disabled>📋 Copier la synthèse pour Vibe</button>
+    <div id="syncStatus">Synchronisation avec Notion…</div>
   </div>
 </footer>
 
 <script>
-const TACHES = [
+// ── Configuration Notion ──
+var NOTION_TOKEN = "ntn_U33239265549KjTVgojVoR5vXXTiwasTSIVlwp5eYHT7C0";
+var DB_ID = "f9028b91-b5c3-43f8-b2f1-935ac1e6a275";
+var API = "https://api.notion.com/v1";
+
+// ── Liste de secours (régénérée chaque matin à 6h30) ──
+var TACHES_SECOURS = [
   { id: "4070c61f181a8128928ee011c5a60fbb", titre: "Vérifier le message Chorus Pro du 22/10 sur le portail", domaine: "Administration", priorite: "A", orig: { fait: false, plusTard: false, nonPertinent: false } },
   { id: "40c0c61f181a8133a9e1cfafcdd082fb", titre: "3 photos avant-pendant-après", domaine: "Communication et RP", priorite: "A", orig: { fait: false, plusTard: false, nonPertinent: false } },
   { id: "4080c61f181a81da9addf4f045939d24", titre: "Nettoyer compta perso/T3O", domaine: "Administration", priorite: "B", orig: { fait: false, plusTard: false, nonPertinent: false } },
@@ -152,39 +165,100 @@ const TACHES = [
   { id: "40c0c61f181a81de9ff0d4d9513f6382", titre: "Alimenter CRM Personnes", domaine: "Communication et RP", priorite: "C", orig: { fait: false, plusTard: false, nonPertinent: false } },
 ];
 
-const DOMAINES = ["Tous", "Administration", "Communication et RP", "Diffusion", "Production", "Strategie"];
-const KEY = "t3o-taches-2026-11-10";
-const ORDRE = { A: 0, B: 1, C: 2 };
+var ORDRE = { A: 0, B: 1, C: 2 };
+var taches = [];
+var modeHorsLigne = false;
+var filtre = "Tous";
+var afficherTraitees = true;
+var filtresDiv = document.getElementById("filtres");
 
-let overrides = {};
-try { overrides = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { overrides = {}; }
-let filtre = "Tous";
-let afficherTraitees = true;
-
-function etat(t) {
-  const o = overrides[t.id];
-  if (!o) return { ...t.orig, modifie: false };
-  return { fait: !!o.fait, plusTard: !!o.plusTard, nonPertinent: !!o.nonPertinent, modifie: true };
+function aujourdhu() {
+  return new Intl.DateTimeFormat("fr-CA", { timeZone: "Europe/Paris" }).format(new Date());
 }
-function sauver() { try { localStorage.setItem(KEY, JSON.stringify(overrides)); } catch (e) {} }
+function dateFr() {
+  return new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Paris" }).format(new Date());
+}
+function idVersUUID(id) {
+  var m = id.match(/^(.{8})(.{4})(.{4})(.{4})(.{12})$/);
+  return m ? m.slice(1).join("-") : id;
+}
 
-function modifier(t, champ) {
-  const e = etat(t);
-  if (e[champ]) { delete overrides[t.id]; }
-  else { overrides[t.id] = { fait: champ === "fait", plusTard: champ === "plusTard", nonPertinent: champ === "nonPertinent" }; }
-  sauver(); rendre();
+async function chargerTaches() {
+  var jour = aujourdhu();
+  var res = await fetch(API + "/databases/" + DB_ID + "/query", {
+    method: "POST",
+    headers: { "Authorization": "Bearer " + NOTION_TOKEN, "Notion-Version": "2022-06-28", "Content-Type": "application/json" },
+    body: JSON.stringify({ page_size: 100, filter: { property: "Date", date: { equals: jour } } })
+  });
+  if (!res.ok) throw new Error("API " + res.status);
+  var data = await res.json();
+  return data.results.map(function (p) {
+    var pr = p.properties || {};
+    function texte(prop) { try { return pr[prop].title[0].plain_text; } catch (e) { return "Sans titre"; } }
+    function sel(prop) { try { return pr[prop].select.name; } catch (e) { return null; } }
+    function chk(prop) { try { return !!pr[prop].checkbox; } catch (e) { return false; } }
+    return {
+      id: p.id,
+      titre: texte("Tâche"),
+      domaine: sel("Domaine") || "Autre",
+      priorite: sel("Priorité") || "C",
+      etat: { fait: chk("Fait"), plusTard: chk("Plus tard"), nonPertinent: chk("Non pertinent"), erreur: false }
+    };
+  });
+}
+
+function envoyer(t, chap, valeur) {
+  var prop = chap === "fait" ? "Fait" : chap === "plusTard" ? "Plus tard" : "Non pertinent";
+  return fetch(API + "/pages/" + idVersUUID(t.id), {
+    method: "PATCH",
+    headers: { "Authorization": "Bearer " + NOTION_TOKEN, "Notion-Version": "2022-06-28", "Content-Type": "application/json" },
+    body: JSON.stringify({ properties: (function () { var o = {}; o[prop] = { checkbox: valeur }; return o; })() })
+  }).then(function (res) { return res.ok; });
+}
+
+function modifier(t, chap) {
+  var nouveau = !t.etat[chap];
+  // Mise à jour optimiste de l'affichage
+  t.etat = { fait: chap === "fait" ? nouveau : false, plusTard: chap === "plusTard" ? nouveau : false, nonPertinent: chap === "nonPertinent" ? nouveau : false, erreur: false };
+  rendre();
+  envoyer(t, chap, nouveau).then(function (ok) {
+    if (!ok) {
+      // Échec : revenir à l'état précédent et signaler
+      t.etat[chap] = !nouveau;
+      t.etat.erreur = true;
+      rendre();
+    } else {
+      majStatusSync();
+    }
+  });
+}
+
+function majStatusSync() {
+  var st = document.getElementById("syncStatus");
+  var pb = taches.some(function (t) { return t.etat.erreur; });
+  if (modeHorsLigne) {
+    st.textContent = "⚠️ Hors ligne — re-tape pour réessayer";
+    st.className = "ko";
+  } else if (pb) {
+    st.textContent = "⚠️ Synchronisation en échec sur une tâche — re-tape le bouton";
+    st.className = "ko";
+  } else {
+    st.textContent = "✓ Synchronisé avec Notion en temps réel";
+    st.className = "ok";
+  }
 }
 
 function carte(t) {
-  const e = etat(t);
-  const cls = e.fait ? "fait" : e.nonPertinent ? "nonPertinent" : e.plusTard ? "plusTard" : "";
-  const div = document.createElement("div");
-  div.className = "card " + cls;
+  var e = t.etat;
+  var cls = e.fait ? "fait" : e.nonPertinent ? "nonPertinent" : e.plusTard ? "plusTard" : "";
+  var div = document.createElement("div");
+  div.className = "card " + cls + (e.erreur ? " erreur" : "");
   div.innerHTML =
     '<div class="row"><div class="dot ' + t.priorite + '"></div><div>' +
     '<p class="titre"></p>' +
     '<div class="tags"><span class="tag dom"></span><span class="tag prio">Priorité ' + t.priorite + '</span></div>' +
     '</div></div>' +
+    '<div class="syncerr">⚠️ Envoi échoué — re-tape le bouton pour réessayer.</div>' +
     '<div class="actions">' +
     '<button class="btn fait' + (e.fait ? " on" : "") + '" data-a="fait">✓ Fait</button>' +
     '<button class="btn plusTard' + (e.plusTard ? " on" : "") + '" data-a="plusTard">⏭ Plus tard</button>' +
@@ -199,24 +273,22 @@ function carte(t) {
 }
 
 function rendre() {
-  const listes = TACHES.map(function (t) { return Object.assign({}, t, { e: etat(t) }); });
-  const actives = listes.filter(function (t) { return !t.e.fait && !t.e.nonPertinent; });
-  const traitees = listes.filter(function (t) { return t.e.fait || t.e.nonPertinent; });
-  const faites = listes.filter(function (t) { return t.e.fait; });
-  const nbTotal = Math.max(1, listes.filter(function (t) { return !t.e.nonPertinent; }).length);
-  const modifs = listes.filter(function (t) { return t.e.modifie; });
+  var actives = taches.filter(function (t) { return !t.etat.fait && !t.etat.nonPertinent; });
+  var traitees = taches.filter(function (t) { return t.etat.fait || t.etat.nonPertinent; });
+  var faites = taches.filter(function (t) { return t.etat.fait; });
+  var nbTotal = Math.max(1, taches.filter(function (t) { return !t.etat.nonPertinent; }).length);
 
   document.getElementById("nbFaites").textContent = faites.length + " faite" + (faites.length > 1 ? "s" : "");
-  document.getElementById("nbActives").textContent = actives.length + " à faire · " + listes.filter(function (t) { return t.e.plusTard; }).length + " reportée(s)";
+  document.getElementById("nbActives").textContent = actives.length + " à faire · " + taches.filter(function (t) { return t.etat.plusTard; }).length + " reportée(s)";
   document.getElementById("barre").style.width = Math.min(100, Math.round(faites.length / nbTotal * 100)) + "%";
 
-  const fa = function (l) { return filtre === "Tous" ? true : l.domaine === filtre; };
-  const la = document.getElementById("listeActives");
+  var fa = function (t) { return filtre === "Tous" || t.domaine === filtre; };
+  var la = document.getElementById("listeActives");
   la.innerHTML = "";
   actives.filter(fa).sort(function (a, b) { return ORDRE[a.priorite] - ORDRE[b.priorite]; }).forEach(function (t) { la.appendChild(carte(t)); });
 
-  const lt = document.getElementById("listeTraitees");
-  const bt = document.getElementById("btnTraitees");
+  var lt = document.getElementById("listeTraitees");
+  var bt = document.getElementById("btnTraitees");
   lt.innerHTML = "";
   if (afficherTraitees) {
     traitees.filter(fa).forEach(function (t) { lt.appendChild(carte(t)); });
@@ -227,63 +299,43 @@ function rendre() {
     bt.textContent = "▸ Afficher les traitées (" + traitees.length + ")";
   }
 
-  document.getElementById("vide").style.display = actives.length === 0 ? "block" : "none";
+  document.getElementById("vide").style.display = taches.length && actives.length === 0 ? "block" : "none";
+  document.getElementById("chargement").style.display = "none";
+  majStatusSync();
+}
 
-  const msg = document.getElementById("syncMsg");
-  const btn = document.getElementById("syncBtn");
-  if (modifs.length) {
-    msg.textContent = modifs.length + " changement" + (modifs.length > 1 ? "s" : "") + " à synchroniser";
-    msg.className = "sync-msg attente";
-    btn.disabled = false; btn.className = "actif";
-    btn.textContent = "📋 Copier la synthèse pour Vibe";
-  } else {
-    msg.textContent = "Tout est synchronisé";
-    msg.className = "sync-msg ok";
-    btn.disabled = true; btn.className = "";
-  }
+function construireFiltres() {
+  var domaines = ["Tous"];
+  taches.forEach(function (t) { if (domaines.indexOf(t.domaine) === -1) domaines.push(t.domaine); });
+  filtresDiv.innerHTML = "";
+  domaines.forEach(function (d) {
+    var b = document.createElement("button");
+    b.className = "chip" + (d === filtre ? " active" : "");
+    b.textContent = d;
+    b.addEventListener("click", function () {
+      filtre = d;
+      filtresDiv.querySelectorAll(".chip").forEach(function (c) { c.classList.remove("active"); });
+      b.classList.add("active");
+      rendre();
+    });
+    filtresDiv.appendChild(b);
+  });
 }
 
 document.getElementById("btnTraitees").addEventListener("click", function () { afficherTraitees = !afficherTraitees; rendre(); });
 
-var filtresDiv = document.getElementById("filtres");
-DOMAINES.forEach(function (d) {
-  var b = document.createElement("button");
-  b.className = "chip" + (d === "Tous" ? " active" : "");
-  b.textContent = d;
-  b.addEventListener("click", function () {
-    filtre = d;
-    filtresDiv.querySelectorAll(".chip").forEach(function (c) { c.classList.remove("active"); });
-    b.classList.add("active");
-    rendre();
-  });
-  filtresDiv.appendChild(b);
-});
-
-document.getElementById("syncBtn").addEventListener("click", function () {
-  var lignes = [];
-  var faites = TACHES.filter(function (t) { return etat(t).fait; });
-  var plusTard = TACHES.filter(function (t) { return etat(t).plusTard; });
-  var np = TACHES.filter(function (t) { return etat(t).nonPertinent; });
-  if (faites.length) lignes.push("✅ Marquer « Fait » : " + faites.map(function (t) { return t.titre; }).join(" ; "));
-  if (plusTard.length) lignes.push("⏭️ À reporter : " + plusTard.map(function (t) { return t.titre; }).join(" ; "));
-  if (np.length) lignes.push("🚫 Marquer « Non pertinent » : " + np.map(function (t) { return t.titre; }).join(" ; "));
-  var txt = "Mets à jour mes tâches du jour dans Notion (base « T3O — Tâches du jour », 2026-11-10).\n" + (lignes.length ? lignes.join("\n") : "Aucun changement.");
-  var done = function () {
-    var btn = document.getElementById("syncBtn");
-    btn.textContent = "✓ Copié — colle-le dans le chat Vibe";
-    btn.disabled = false; btn.className = "actif";
-  };
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(txt).then(done, function () { prompt(txt); });
-  } else {
-    var ta = document.createElement("textarea");
-    ta.value = txt; document.body.appendChild(ta); ta.select();
-    try { document.execCommand("copy"); done(); } catch (e) { prompt(txt); }
-    document.body.removeChild(ta);
+(async function init() {
+  document.getElementById("dateTitre").textContent = dateFr();
+  try {
+    taches = await chargerTaches();
+  } catch (e) {
+    modeHorsLigne = true;
+    taches = TACHES_SECOURS.map(function (t) { return { id: t.id, titre: t.titre, domaine: t.domaine, priorite: t.priorite, etat: { fait: t.orig.fait, plusTard: t.orig.plusTard, nonPertinent: t.orig.nonPertinent, erreur: false } }; });
+    document.getElementById("banniere").style.display = "block";
   }
-});
-
-rendre();
+  construireFiltres();
+  rendre();
+})();
 </script>
 </body>
 </html>
