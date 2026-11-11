@@ -56,9 +56,9 @@
   .syncerr { display: none; margin-top: 8px; font-size: 12px; color: var(--red); font-weight: 600; }
   .card.erreur .syncerr { display: block; }
 
-  .en-savoir { background: none; border: none; color: var(--blue); font-size: 12px; font-weight: 600; margin-top: 8px; padding: 0; cursor: pointer; }
+  .resume-carte { font-size: 13px; line-height: 1.45; color: var(--text); margin-top: 8px; }
+  .en-savoir { display: block; width: 100%; background: #fafafa; border: 1px solid var(--border); color: var(--blue); font-size: 12px; font-weight: 700; margin-top: 8px; padding: 8px; border-radius: 10px; cursor: pointer; }
   .detail { display: none; margin-top: 10px; padding: 10px 12px; background: #fafafa; border-radius: 12px; border: 1px solid var(--border); }
-  .detail .resume { font-size: 13px; line-height: 1.45; color: var(--text); }
   .detail .liens { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
   .detail .liens a { flex: 1; min-width: 130px; text-align: center; text-decoration: none; font-size: 12px; font-weight: 700; border-radius: 10px; padding: 9px 6px; }
   .detail .liens a.notion { background: var(--dark); color: #fff; }
@@ -269,12 +269,6 @@ function patchNotion(t, props) {
 function modifier(t, chap) {
   if (modeHorsLigne) { /* on tente quand même l'envoi, il passera si la connexion revient */ }
   var nouveau = !t.etat[chap];
-  if (nouveau && chap !== "nonPertinent") {
-    // Fait / Plus tard : confirmation AVANT d'envoyer dans Notion
-    confirme[t.id] = { chap: chap, raison: null };
-    rendre();
-    return;
-  }
   if (chap === "nonPertinent" && !t.etat.nonPertinent) {
     // Première tape : ouvrir le formulaire de raison AVANT de cocher
     ouvertes[t.id] = ouvertes[t.id] || {};
@@ -398,10 +392,11 @@ function carte(t) {
     '<div class="tags"><span class="tag dom"></span><span class="tag prio">Priorité ' + t.priorite + '</span></div>' +
     '</div></div>';
 
-  // En savoir plus (toujours présent : au minimum le lien Notion)
+  // Résumé d'une phrase : toujours visible, sans clic
+  html += '<p class="resume-carte"></p>';
+  // En savoir plus (bouton) : liens Notion et Maps
   html += '<button class="en-savoir">' + (o.savoir ? "▴ En savoir moins" : "▾ En savoir plus") + '</button>';
   html += '<div class="detail"' + (o.savoir ? ' style="display:block"' : "") + '>' +
-    '<div class="resume"></div>' +
     '<div class="liens">' +
     '<a class="notion" target="_blank" rel="noopener">📄 Ouvrir dans Notion</a>' +
     (t.maps ? '<a class="maps" target="_blank" rel="noopener">🗺 Itinéraire Maps</a>' : "") +
@@ -450,7 +445,7 @@ function carte(t) {
   div.querySelector(".tag.dom").textContent = t.domaine;
 
   // En savoir plus
-  div.querySelector(".resume").textContent = t.resume || "Pas encore de résumé — ouvre la page Notion pour la marche à suivre complète.";
+  div.querySelector(".resume-carte").textContent = t.resume || "";
   div.querySelector(".en-savoir").addEventListener("click", function () {
     ouvertes[t.id] = ouvertes[t.id] || {};
     ouvertes[t.id].savoir = !ouvertes[t.id].savoir;
