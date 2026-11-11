@@ -86,6 +86,12 @@
   @keyframes pulse { 50% { opacity: .55; } }
 
   .actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 12px; }
+  .confirm { margin-top: 12px; padding: 12px; border: 1px solid var(--accent); border-radius: 12px; background: rgba(99,102,241,.08); }
+  .confirm .c-lib { font-weight: 600; margin: 0 0 4px; }
+  .confirm .c-note { font-size: 12px; opacity: .7; margin: 0 0 10px; }
+  .confirm .c-btns { display: flex; gap: 8px; }
+  .confirm .c-ok { flex: 1; background: var(--accent); color: #fff; border: none; border-radius: 10px; padding: 10px; font-size: 15px; font-weight: 600; }
+  .confirm .c-no { flex: 1; background: transparent; border: 1px solid rgba(255,255,255,.25); border-radius: 10px; padding: 10px; font-size: 15px; }
   .btn { border-radius: 12px; padding: 12px 4px; font-size: 13px; font-weight: 700; border: 1px solid; cursor: pointer; transition: transform .1s; }
   .btn:active { transform: scale(.95); }
   .btn.fait { background: var(--green-bg); color: var(--green); border-color: var(--green-bd); }
@@ -200,6 +206,7 @@ var modeHorsLigne = false;
 var filtre = "Tous";
 var afficherTraitees = true;
 var ouvertes = {}; // id → état d'ouverture des dépliables (savoir, question)
+var confirme = {}; // id → {chap, raison} : action en attente de confirmation
 var filtresDiv = document.getElementById("filtres");
 
 function aujourdhu() {
@@ -262,6 +269,12 @@ function patchNotion(t, props) {
 function modifier(t, chap) {
   if (modeHorsLigne) { /* on tente quand même l'envoi, il passera si la connexion revient */ }
   var nouveau = !t.etat[chap];
+  if (nouveau && chap !== "nonPertinent") {
+    // Fait / Plus tard : confirmation AVANT d'envoyer dans Notion
+    confirme[t.id] = { chap: chap, raison: null };
+    rendre();
+    return;
+  }
   if (chap === "nonPertinent" && !t.etat.nonPertinent) {
     // Première tape : ouvrir le formulaire de raison AVANT de cocher
     ouvertes[t.id] = ouvertes[t.id] || {};
@@ -284,16 +297,29 @@ function chapProp(chap) {
 }
 
 function envoyerRaison(t, texte) {
-  var props = { "Non pertinent": { checkbox: true } };
-  var raison = (texte || "").trim();
-  if (raison) { props["Raison"] = { rich_text: [{ text: { content: raison } }] }; }
-  t.etat = { fait: false, plusTard: false, nonPertinent: true, erreur: false };
-  ouvertes[t.id] = {};
+  // Confirmation AVANT d'envoyer le Non pertinent (+ raison) dans Notion
+  confirme[t.id] = { chap: "nonPertinent", raison: (texte || "").trim() };
+  rendre();
+}
+
+function confirmerAction(t) {
+  var c = confirme[t.id];
+  if (!c) return;
+  var props = {};
+  props[chapProp(c.chap)] = { checkbox: true };
+  if (c.chap === "nonPertinent" && c.raison) { props["Raison"] = { rich_text: [{ text: { content: c.raison } }] }; }
+  t.etat = { fait: c.chap === "fait", plusTard: c.chap === "plusTard", nonPertinent: c.chap === "nonPertinent", erreur: false };
+  delete confirme[t.id];
+  ouvertes[t.id] = { savoir: ouvertes[t.id] ? ouvertes[t.id].savoir : false };
   rendre();
   patchNotion(t, props).then(function (ok) {
-    if (!ok) { t.etat.nonPertinent = false; t.etat.erreur = true; ouvertes[t.id].raison = true; rendre(); }
+    if (!ok) { t.etat = { fait: false, plusTard: false, nonPertinent: false, erreur: true }; rendre(); }
     else { majStatusSync(); }
   });
+}
+function annulerAction(t) {
+  delete confirme[t.id];
+  rendre();
 }
 
 function envoyerReponseChoix(t, opt) {
@@ -404,11 +430,20 @@ function carte(t) {
     '<div class="rf-btns"><button class="rf-envoyer">Envoyer</button><button class="rf-annuler">Annuler</button></div>' +
     '</div>';
 
-  html += '<div class="actions">' +
-    '<button class="btn fait' + (e.fait ? " on" : "") + '" data-a="fait">✓ Fait</button>' +
-    '<button class="btn plusTard' + (e.plusTard ? " on" : "") + '" data-a="plusTard">⏭ Plus tard</button>' +
-    '<button class="btn np' + (e.nonPertinent ? " on" : "") + '" data-a="nonPertinent">✕ Non pertinent</button>' +
-    '</div>';
+  var c = confirme[t.id];
+  if (c) {
+    html += '<div class="confirm">' +
+      '<p class="c-lib"></p>' +
+      '<p class="c-note">La tâche passera dans les traitées après confirmation.</p>' +
+      '<div class="c-btns"><button class="c-ok">✔ Confirmer</button><button class="c-no">Annuler</button></div>' +
+      '</div>';
+  } else {
+    html += '<div class="actions">' +
+      '<button class="btn fait' + (e.fait ? " on" : "") + '" data-a="fait">✓ Fait</button>' +
+      '<button class="btn plusTard' + (e.plusTard ? " on" : "") + '" data-a="plusTard">⏭ Plus tard</button>' +
+      '<button class="btn np' + (e.nonPertinent ? " on" : "") + '" data-a="nonPertinent">✕ Non pertinent</button>' +
+      '</div>';
+  }
 
   div.innerHTML = html;
   div.querySelector(".titre").textContent = t.titre;
@@ -468,10 +503,18 @@ function carte(t) {
     creerMicro(rfBtns, function () { return rfTa; }, function (txt) { envoyerRaison(t, txt); });
   }
 
-  // Actions
-  div.querySelectorAll(".actions .btn").forEach(function (b) {
-    b.addEventListener("click", function () { modifier(t, b.dataset.a); });
-  });
+  // Confirmation ou actions
+  if (c) {
+    var lib = c.chap === "fait" ? "Confirmer « ✓ Fait » ?" : c.chap === "plusTard" ? "Confirmer « ⏭ Plus tard » ?" : "Confirmer « ✕ Non pertinent » ?";
+    if (c.chap === "nonPertinent" && c.raison) { lib += " Raison : « " + c.raison + " »"; }
+    div.querySelector(".c-lib").textContent = lib;
+    div.querySelector(".c-ok").addEventListener("click", function () { confirmerAction(t); });
+    div.querySelector(".c-no").addEventListener("click", function () { annulerAction(t); });
+  } else {
+    div.querySelectorAll(".actions .btn").forEach(function (b) {
+      b.addEventListener("click", function () { modifier(t, b.dataset.a); });
+    });
+  }
   return div;
 }
 
