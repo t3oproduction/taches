@@ -11,10 +11,10 @@
     --green: #059669; --green-bg: #ecfdf5; --green-bd: #a7f3d0;
     --amber: #d97706; --amber-bg: #fffbeb; --amber-bd: #fde68a;
     --gray-act: #4b5563; --gray-bg: #f9fafb; --gray-bd: #e5e7eb;
-    --red: #dc2626; --dark: #111827;
+    --red: #dc2626; --dark: #111827; --blue: #2563eb; --blue-bg: #eff6ff; --blue-bd: #bfdbfe;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); max-width: 480px; margin: 0 auto; padding-bottom: 90px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); max-width: 480px; margin: 0 auto; padding-bottom: 70px; }
 
   #pinGate { position: fixed; inset: 0; z-index: 99; background: #f5f5f4; display: flex; align-items: center; justify-content: center; }
   #pinGate .pinBox { width: 85%; max-width: 340px; text-align: center; }
@@ -56,6 +56,35 @@
   .syncerr { display: none; margin-top: 8px; font-size: 12px; color: var(--red); font-weight: 600; }
   .card.erreur .syncerr { display: block; }
 
+  .en-savoir { background: none; border: none; color: var(--blue); font-size: 12px; font-weight: 600; margin-top: 8px; padding: 0; cursor: pointer; }
+  .detail { display: none; margin-top: 10px; padding: 10px 12px; background: #fafafa; border-radius: 12px; border: 1px solid var(--border); }
+  .detail .resume { font-size: 13px; line-height: 1.45; color: var(--text); }
+  .detail .liens { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .detail .liens a { flex: 1; min-width: 130px; text-align: center; text-decoration: none; font-size: 12px; font-weight: 700; border-radius: 10px; padding: 9px 6px; }
+  .detail .liens a.notion { background: var(--dark); color: #fff; }
+  .detail .liens a.maps { background: #fff; color: var(--dark); border: 1px solid var(--border); }
+
+  .question { display: none; margin-top: 10px; padding: 10px 12px; background: var(--blue-bg); border: 1px solid var(--blue-bd); border-radius: 12px; }
+  .question .q-texte { font-size: 13px; font-weight: 700; line-height: 1.4; }
+  .question .q-choix { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+  .question .q-opt { border: 1px solid var(--blue-bd); background: #fff; color: var(--blue); border-radius: 999px; padding: 9px 16px; font-size: 13px; font-weight: 700; cursor: pointer; }
+  .question .q-opt.on { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .question .q-textarea { width: 100%; border: 1px solid var(--blue-bd); border-radius: 10px; padding: 10px; font-size: 13px; font-family: inherit; resize: none; min-height: 56px; margin-top: 8px; outline: none; background: #fff; }
+  .question .q-envoyer { margin-top: 8px; border: none; border-radius: 10px; padding: 10px; width: 100%; font-size: 12px; font-weight: 800; background: var(--blue); color: #fff; cursor: pointer; }
+  .question .q-repondu { margin-top: 8px; font-size: 12px; color: var(--green); font-weight: 700; display: none; }
+
+  .raison-form { display: none; margin-top: 12px; padding: 10px; background: #fff; border: 1px dashed var(--gray-act); border-radius: 12px; }
+  .raison-form p { font-size: 12px; font-weight: 700; margin-bottom: 8px; }
+  .raison-form textarea { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px; font-size: 13px; font-family: inherit; resize: none; min-height: 52px; outline: none; }
+  .raison-form .rf-btns { display: flex; gap: 8px; margin-top: 8px; }
+  .raison-form button { flex: 1; border-radius: 10px; padding: 10px; font-size: 12px; font-weight: 800; cursor: pointer; }
+  .raison-form .rf-envoyer { border: none; background: var(--gray-act); color: #fff; }
+  .raison-form .rf-annuler { border: 1px solid var(--border); background: #fff; color: var(--muted); }
+
+  .micro-btn { flex: 0 0 44px !important; border: 1px solid var(--border) !important; background: #fff !important; color: var(--dark) !important; font-size: 16px !important; }
+  .micro-btn.ecoute { background: #ef4444 !important; color: #fff !important; border-color: #ef4444 !important; animation: pulse 1s infinite; }
+  @keyframes pulse { 50% { opacity: .55; } }
+
   .actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 12px; }
   .btn { border-radius: 12px; padding: 12px 4px; font-size: 13px; font-weight: 700; border: 1px solid; cursor: pointer; transition: transform .1s; }
   .btn:active { transform: scale(.95); }
@@ -75,7 +104,6 @@
   #syncStatus { font-size: 12px; font-weight: 600; color: var(--faint); }
   #syncStatus.ok { color: var(--green); }
   #syncStatus.ko { color: var(--red); }
-
 </style>
 </head>
 <body>
@@ -130,7 +158,6 @@
   <button class="section-btn" id="btnTraitees" style="display:none"></button>
   <div id="listeTraitees"></div>
   <div class="empty" id="vide" style="display:none">🎉 Journée terminée !</div>
-
 </main>
 
 <footer>
@@ -172,6 +199,7 @@ var taches = [];
 var modeHorsLigne = false;
 var filtre = "Tous";
 var afficherTraitees = true;
+var ouvertes = {}; // id → état d'ouverture des dépliables (savoir, question)
 var filtresDiv = document.getElementById("filtres");
 
 function aujourdhu() {
@@ -184,55 +212,267 @@ function idVersUUID(id) {
   var m = id.match(/^(.{8})(.{4})(.{4})(.{4})(.{12})$/);
   return m ? m.slice(1).join("-") : id;
 }
+function headersNotion() {
+  return { "Authorization": "Bearer " + NOTION_TOKEN, "Notion-Version": "2022-06-28", "Content-Type": "application/json" };
+}
 
 async function chargerTaches() {
   var jour = aujourdhu();
   var res = await fetch(API + "/databases/" + DB_ID + "/query", {
     method: "POST",
-    headers: { "Authorization": "Bearer " + NOTION_TOKEN, "Notion-Version": "2022-06-28", "Content-Type": "application/json" },
+    headers: headersNotion(),
     body: JSON.stringify({ page_size: 100, filter: { property: "Date", date: { equals: jour } } })
   });
   if (!res.ok) throw new Error("API " + res.status);
   var data = await res.json();
   return data.results.map(function (p) {
     var pr = p.properties || {};
-    function texte(prop) { try { return pr[prop].title[0].plain_text; } catch (e) { return "Sans titre"; } }
+    function texte(prop) { try { return pr[prop].rich_text.map(function (r) { return r.plain_text; }).join(""); } catch (e) { return ""; } }
     function sel(prop) { try { return pr[prop].select.name; } catch (e) { return null; } }
     function chk(prop) { try { return !!pr[prop].checkbox; } catch (e) { return false; } }
+    function multi(prop) { try { return pr[prop].multi_select.map(function (o) { return o.name; }); } catch (e) { return []; } }
+    function url(prop) { try { return pr[prop].url || null; } catch (e) { return null; } }
     return {
       id: p.id,
-      titre: texte("Tâche"),
+      urlPage: p.url,
+      titre: (function () { try { return pr["Tâche"].title[0].plain_text; } catch (e) { return "Sans titre"; } })(),
       domaine: sel("Domaine") || "Autre",
       priorite: sel("Priorité") || "C",
+      resume: texte("Résumé"),
+      maps: url("Lien Maps"),
+      question: texte("Question"),
+      choix: multi("Choix possibles"),
+      reponseChoix: sel("Ta réponse (choix)"),
+      reponseTexte: texte("Ta réponse (texte)"),
+      raison: texte("Raison"),
       etat: { fait: chk("Fait"), plusTard: chk("Plus tard"), nonPertinent: chk("Non pertinent"), erreur: false }
     };
   });
 }
 
-function envoyer(t, chap, valeur) {
-  var prop = chap === "fait" ? "Fait" : chap === "plusTard" ? "Plus tard" : "Non pertinent";
+function patchNotion(t, props) {
   return fetch(API + "/pages/" + idVersUUID(t.id), {
     method: "PATCH",
-    headers: { "Authorization": "Bearer " + NOTION_TOKEN, "Notion-Version": "2022-06-28", "Content-Type": "application/json" },
-    body: JSON.stringify({ properties: (function () { var o = {}; o[prop] = { checkbox: valeur }; return o; })() })
+    headers: headersNotion(),
+    body: JSON.stringify({ properties: props })
   }).then(function (res) { return res.ok; });
 }
 
+// ── Boutons d'action ──
 function modifier(t, chap) {
+  if (modeHorsLigne) { /* on tente quand même l'envoi, il passera si la connexion revient */ }
   var nouveau = !t.etat[chap];
-  // Mise à jour optimiste de l'affichage
+  if (chap === "nonPertinent" && !t.etat.nonPertinent) {
+    // Première tape : ouvrir le formulaire de raison AVANT de cocher
+    ouvertes[t.id] = ouvertes[t.id] || {};
+    ouvertes[t.id].raison = true;
+    rendre();
+    return;
+  }
   t.etat = { fait: chap === "fait" ? nouveau : false, plusTard: chap === "plusTard" ? nouveau : false, nonPertinent: chap === "nonPertinent" ? nouveau : false, erreur: false };
+  var props = {};
+  props[chapProp(chap)] = { checkbox: nouveau };
+  if (chap === "nonPertinent" && !nouveau) { props["Raison"] = { rich_text: [] }; }
   rendre();
-  envoyer(t, chap, nouveau).then(function (ok) {
-    if (!ok) {
-      // Échec : revenir à l'état précédent et signaler
-      t.etat[chap] = !nouveau;
-      t.etat.erreur = true;
-      rendre();
-    } else {
-      majStatusSync();
-    }
+  patchNotion(t, props).then(function (ok) {
+    if (!ok) { t.etat[chap] = !nouveau; t.etat.erreur = true; rendre(); }
+    else { majStatusSync(); }
   });
+}
+function chapProp(chap) {
+  return chap === "fait" ? "Fait" : chap === "plusTard" ? "Plus tard" : "Non pertinent";
+}
+
+function envoyerRaison(t, texte) {
+  var props = { "Non pertinent": { checkbox: true } };
+  var raison = (texte || "").trim();
+  if (raison) { props["Raison"] = { rich_text: [{ text: { content: raison } }] }; }
+  t.etat = { fait: false, plusTard: false, nonPertinent: true, erreur: false };
+  ouvertes[t.id] = {};
+  rendre();
+  patchNotion(t, props).then(function (ok) {
+    if (!ok) { t.etat.nonPertinent = false; t.etat.erreur = true; ouvertes[t.id].raison = true; rendre(); }
+    else { majStatusSync(); }
+  });
+}
+
+function envoyerReponseChoix(t, opt) {
+  var ancien = t.reponseChoix;
+  t.reponseChoix = opt;
+  rendre();
+  patchNotion(t, { "Ta réponse (choix)": { select: { name: opt } } }).then(function (ok) {
+    if (!ok) { t.reponseChoix = ancien; t.etat.erreur = true; rendre(); }
+    else { majStatusSync(); }
+  });
+}
+function envoyerReponseTexte(t, texte) {
+  var ancien = t.reponseTexte;
+  t.reponseTexte = texte;
+  t.repondu = true;
+  rendre();
+  patchNotion(t, { "Ta réponse (texte)": { rich_text: [{ text: { content: texte } }] } }).then(function (ok) {
+    if (!ok) { t.reponseTexte = ancien; t.etat.erreur = true; rendre(); }
+    else { majStatusSync(); }
+  });
+}
+
+// ── Micro (reconnaissance vocale du navigateur — Chrome) ──
+function microSupporte() {
+  return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+}
+function creerMicro(container, getTextarea, onFinal) {
+  if (!microSupporte()) return null;
+  var b = document.createElement("button");
+  b.className = "btn micro-btn";
+  b.textContent = "🎤";
+  b.title = "Parler";
+  var reco = null;
+  var ecoute = false;
+  b.addEventListener("click", function () {
+    if (ecoute) { try { reco.stop(); } catch (e) {} return; }
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    reco = new SR();
+    reco.lang = "fr-FR";
+    reco.continuous = false;
+    reco.interimResults = true;
+    var accumule = "";
+    reco.onresult = function (ev) {
+      var s = "";
+      for (var i = 0; i < ev.results.length; i++) { s += ev.results[i][0].transcript; }
+      accumule = s;
+      var ta = getTextarea();
+      if (ta) ta.value = s;
+    };
+    reco.onend = function () {
+      ecoute = false;
+      b.classList.remove("ecoute");
+      var ta = getTextarea();
+      var final = accumule.trim();
+      if (final && ta && ta.value.trim() === final) { if (onFinal) onFinal(final); }
+    };
+    reco.onerror = function () { ecoute = false; b.classList.remove("ecoute"); };
+    ecoute = true;
+    b.classList.add("ecoute");
+    try { reco.start(); } catch (e) { ecoute = false; b.classList.remove("ecoute"); }
+  });
+  container.appendChild(b);
+  return b;
+}
+
+// ── Rendu des cartes ──
+function carte(t) {
+  var e = t.etat;
+  var o = ouvertes[t.id] || {};
+  var cls = e.fait ? "fait" : e.nonPertinent ? "nonPertinent" : e.plusTard ? "plusTard" : "";
+  var div = document.createElement("div");
+  div.className = "card " + cls + (e.erreur ? " erreur" : "");
+
+  var html = '<div class="row"><div class="dot ' + t.priorite + '"></div><div style="flex:1">' +
+    '<p class="titre"></p>' +
+    '<div class="tags"><span class="tag dom"></span><span class="tag prio">Priorité ' + t.priorite + '</span></div>' +
+    '</div></div>';
+
+  // En savoir plus (toujours présent : au minimum le lien Notion)
+  html += '<button class="en-savoir">' + (o.savoir ? "▴ En savoir moins" : "▾ En savoir plus") + '</button>';
+  html += '<div class="detail"' + (o.savoir ? ' style="display:block"' : "") + '>' +
+    '<div class="resume"></div>' +
+    '<div class="liens">' +
+    '<a class="notion" target="_blank" rel="noopener">📄 Ouvrir dans Notion</a>' +
+    (t.maps ? '<a class="maps" target="_blank" rel="noopener">🗺 Itinéraire Maps</a>' : "") +
+    '</div></div>';
+
+  // Question
+  if (t.question) {
+    html += '<div class="question"' + (o.question ? ' style="display:block"' : "") + '>' +
+      '<p class="q-texte"></p>';
+    if (t.choix.length) {
+      html += '<div class="q-choix"></div>';
+    } else {
+      html += '<textarea class="q-textarea" placeholder="Ta réponse…"></textarea>' +
+        '<div class="q-env-wrap" style="display:flex;gap:8px;margin-top:8px"><button class="q-envoyer" style="flex:1">Envoyer</button></div>' +
+        '<p class="q-repondu"' + (t.repondu ? ' style="display:block"' : "") + '>✓ Réponse enregistrée</p>';
+    }
+    html += '</div>';
+  }
+
+  html += '<div class="syncerr">⚠️ Envoi échoué — re-tape le bouton pour réessayer.</div>';
+
+  // Formulaire de raison (Non pertinent)
+  html += '<div class="raison-form"' + (o.raison ? ' style="display:block"' : "") + '>' +
+    '<p>Pourquoi ? (facultatif — aide Vibe à ajuster)</p>' +
+    '<textarea class="rf-texte" placeholder="La raison, en quelques mots…"></textarea>' +
+    '<div class="rf-btns"><button class="rf-envoyer">Envoyer</button><button class="rf-annuler">Annuler</button></div>' +
+    '</div>';
+
+  html += '<div class="actions">' +
+    '<button class="btn fait' + (e.fait ? " on" : "") + '" data-a="fait">✓ Fait</button>' +
+    '<button class="btn plusTard' + (e.plusTard ? " on" : "") + '" data-a="plusTard">⏭ Plus tard</button>' +
+    '<button class="btn np' + (e.nonPertinent ? " on" : "") + '" data-a="nonPertinent">✕ Non pertinent</button>' +
+    '</div>';
+
+  div.innerHTML = html;
+  div.querySelector(".titre").textContent = t.titre;
+  div.querySelector(".tag.dom").textContent = t.domaine;
+
+  // En savoir plus
+  div.querySelector(".resume").textContent = t.resume || "Pas encore de résumé — ouvre la page Notion pour la marche à suivre complète.";
+  div.querySelector(".en-savoir").addEventListener("click", function () {
+    ouvertes[t.id] = ouvertes[t.id] || {};
+    ouvertes[t.id].savoir = !ouvertes[t.id].savoir;
+    rendre();
+  });
+  var lienN = div.querySelector("a.notion");
+  lienN.href = t.urlPage || ("https://www.notion.so/" + idVersUUID(t.id).replace(/-/g, ""));
+  if (t.maps) div.querySelector("a.maps").href = t.maps;
+
+  // Question
+  if (t.question) {
+    var qBox = div.querySelector(".question");
+    qBox.querySelector(".q-texte").textContent = t.question;
+    if (t.choix.length) {
+      var qChoix = qBox.querySelector(".q-choix");
+      t.choix.forEach(function (opt) {
+        var b = document.createElement("button");
+        b.className = "q-opt" + (t.reponseChoix === opt ? " on" : "");
+        b.textContent = opt;
+        b.addEventListener("click", function () { envoyerReponseChoix(t, opt); });
+        qChoix.appendChild(b);
+      });
+    } else {
+      var ta = qBox.querySelector(".q-textarea");
+      ta.value = t.reponseTexte || "";
+      var envWrap = qBox.querySelector(".q-env-wrap");
+      var env = qBox.querySelector(".q-envoyer");
+      function envoyerQ() {
+        var v = ta.value.trim();
+        if (v) { envoyerReponseTexte(t, v); }
+      }
+      env.addEventListener("click", envoyerQ);
+      if (microSupporte()) creerMicro(envWrap, function () { return ta; }, envoyerQ);
+    }
+    if (t.reponseChoix || t.reponseTexte) {
+      // montre la question déjà répondues : garder visible mais discret
+      qBox.style.display = "block";
+      qBox.style.opacity = ".75";
+    }
+  }
+
+  // Formulaire de raison
+  var rf = div.querySelector(".raison-form");
+  var rfTa = rf.querySelector(".rf-texte");
+  rfTa.value = t.raison || "";
+  rf.querySelector(".rf-envoyer").addEventListener("click", function () { envoyerRaison(t, rfTa.value); });
+  rf.querySelector(".rf-annuler").addEventListener("click", function () { ouvertes[t.id] = { savoir: ouvertes[t.id] ? ouvertes[t.id].savoir : false }; rendre(); });
+  if (microSupporte()) {
+    var rfBtns = rf.querySelector(".rf-btns");
+    creerMicro(rfBtns, function () { return rfTa; }, function (txt) { envoyerRaison(t, txt); });
+  }
+
+  // Actions
+  div.querySelectorAll(".actions .btn").forEach(function (b) {
+    b.addEventListener("click", function () { modifier(t, b.dataset.a); });
+  });
+  return div;
 }
 
 function majStatusSync() {
@@ -248,30 +488,6 @@ function majStatusSync() {
     st.textContent = "✓ Synchronisé avec Notion en temps réel";
     st.className = "ok";
   }
-}
-
-function carte(t) {
-  var e = t.etat;
-  var cls = e.fait ? "fait" : e.nonPertinent ? "nonPertinent" : e.plusTard ? "plusTard" : "";
-  var div = document.createElement("div");
-  div.className = "card " + cls + (e.erreur ? " erreur" : "");
-  div.innerHTML =
-    '<div class="row"><div class="dot ' + t.priorite + '"></div><div>' +
-    '<p class="titre"></p>' +
-    '<div class="tags"><span class="tag dom"></span><span class="tag prio">Priorité ' + t.priorite + '</span></div>' +
-    '</div></div>' +
-    '<div class="syncerr">⚠️ Envoi échoué — re-tape le bouton pour réessayer.</div>' +
-    '<div class="actions">' +
-    '<button class="btn fait' + (e.fait ? " on" : "") + '" data-a="fait">✓ Fait</button>' +
-    '<button class="btn plusTard' + (e.plusTard ? " on" : "") + '" data-a="plusTard">⏭ Plus tard</button>' +
-    '<button class="btn np' + (e.nonPertinent ? " on" : "") + '" data-a="nonPertinent">✕ Non pertinent</button>' +
-    '</div>';
-  div.querySelector(".titre").textContent = t.titre;
-  div.querySelector(".tag.dom").textContent = t.domaine;
-  div.querySelectorAll(".btn").forEach(function (b) {
-    b.addEventListener("click", function () { modifier(t, b.dataset.a); });
-  });
-  return div;
 }
 
 function rendre() {
@@ -326,14 +542,13 @@ function construireFiltres() {
 
 document.getElementById("btnTraitees").addEventListener("click", function () { afficherTraitees = !afficherTraitees; rendre(); });
 
-
 (async function init() {
   document.getElementById("dateTitre").textContent = dateFr();
   try {
     taches = await chargerTaches();
   } catch (e) {
     modeHorsLigne = true;
-    taches = TACHES_SECOURS.map(function (t) { return { id: t.id, titre: t.titre, domaine: t.domaine, priorite: t.priorite, etat: { fait: t.orig.fait, plusTard: t.orig.plusTard, nonPertinent: t.orig.nonPertinent, erreur: false } }; });
+    taches = TACHES_SECOURS.map(function (t) { return { id: t.id, titre: t.titre, domaine: t.domaine, priorite: t.priorite, resume: "", maps: null, question: "", choix: [], reponseChoix: null, reponseTexte: "", raison: "", urlPage: null, etat: { fait: t.orig.fait, plusTard: t.orig.plusTard, nonPertinent: t.orig.nonPertinent, erreur: false } }; });
     document.getElementById("banniere").style.display = "block";
   }
   construireFiltres();
