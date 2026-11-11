@@ -529,8 +529,8 @@ function majStatusSync() {
 }
 
 function rendre() {
-  var actives = taches.filter(function (t) { return !t.etat.fait && !t.etat.nonPertinent; });
-  var traitees = taches.filter(function (t) { return t.etat.fait || t.etat.nonPertinent; });
+  var actives = taches.filter(function (t) { return !t.etat.fait && !t.etat.nonPertinent && !t.etat.plusTard; });
+  var traitees = taches.filter(function (t) { return t.etat.fait || t.etat.nonPertinent || t.etat.plusTard; });
   var faites = taches.filter(function (t) { return t.etat.fait; });
   var nbTotal = Math.max(1, taches.filter(function (t) { return !t.etat.nonPertinent; }).length);
 
