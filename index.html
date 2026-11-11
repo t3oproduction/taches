@@ -57,6 +57,7 @@
   .card.erreur .syncerr { display: block; }
 
   .resume-carte { font-size: 13px; line-height: 1.45; color: var(--text); margin-top: 8px; }
+  .lien-fiche { flex: 0 0 auto; align-self: flex-start; text-decoration: none; font-size: 16px; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--border); }
   .en-savoir { display: block; width: 100%; background: #fafafa; border: 1px solid var(--border); color: var(--blue); font-size: 12px; font-weight: 700; margin-top: 8px; padding: 8px; border-radius: 10px; cursor: pointer; }
   .detail { display: none; margin-top: 10px; padding: 10px 12px; background: #fafafa; border-radius: 12px; border: 1px solid var(--border); }
   .detail .liens { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
@@ -390,7 +391,7 @@ function carte(t) {
   var html = '<div class="row"><div class="dot ' + t.priorite + '"></div><div style="flex:1">' +
     '<p class="titre"></p>' +
     '<div class="tags"><span class="tag dom"></span><span class="tag prio">Priorité ' + t.priorite + '</span></div>' +
-    '</div></div>';
+    '</div><a class="lien-fiche" target="_blank" rel="noopener" title="Ouvrir la fiche dans Notion">📄</a></div>';
 
   // Résumé d'une phrase : toujours visible, sans clic
   html += '<p class="resume-carte"></p>';
@@ -443,6 +444,7 @@ function carte(t) {
   div.innerHTML = html;
   div.querySelector(".titre").textContent = t.titre;
   div.querySelector(".tag.dom").textContent = t.domaine;
+  div.querySelector(".lien-fiche").href = t.urlPage || ("https://www.notion.so/" + idVersUUID(t.id).replace(/-/g, ""));
 
   // En savoir plus
   div.querySelector(".resume-carte").textContent = t.resume || "";
