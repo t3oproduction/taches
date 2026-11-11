@@ -76,24 +76,6 @@
   #syncStatus.ok { color: var(--green); }
   #syncStatus.ko { color: var(--red); }
 
-  #sectionVibe { margin-top: 24px; border-top: 1px solid var(--border); padding-top: 16px; }
-  #sectionVibe h2 { font-size: 15px; font-weight: 800; margin-bottom: 10px; }
-  .vibe-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-  .vibe-btn { border-radius: 12px; padding: 13px 8px; font-size: 13px; font-weight: 700; border: 1px solid var(--border); background: #fff; color: var(--text); cursor: pointer; }
-  .vibe-btn:active { transform: scale(.95); }
-  #formReq { display: none; background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 12px; margin-bottom: 12px; }
-  #formReq textarea { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px; font-size: 14px; font-family: inherit; resize: none; min-height: 70px; outline: none; }
-  #formReq textarea:focus { border-color: var(--dark); }
-  #formReq .envoyer { margin-top: 8px; width: 100%; border: none; border-radius: 10px; padding: 12px; font-size: 13px; font-weight: 800; background: var(--dark); color: #fff; cursor: pointer; }
-  .req { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 12px; margin-bottom: 10px; }
-  .req .req-titre { font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-  .req .req-statut { flex-shrink: 0; font-size: 10px; font-weight: 700; border-radius: 999px; padding: 3px 8px; }
-  .req .req-statut.attente { background: #f1f2f4; color: var(--muted); }
-  .req .req-statut.encours { background: #dbeafe; color: #1d4ed8; }
-  .req .req-statut.fait { background: var(--green-bg); color: var(--green); }
-  .req .req-texte { font-size: 12px; color: var(--muted); margin-top: 4px; }
-  .req .req-rep { font-size: 13px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); white-space: pre-wrap; line-height: 1.4; }
-  .req-ok { font-size: 12px; color: var(--green); font-weight: 600; margin-bottom: 10px; display: none; }
 </style>
 </head>
 <body>
@@ -149,19 +131,6 @@
   <div id="listeTraitees"></div>
   <div class="empty" id="vide" style="display:none">🎉 Journée terminée !</div>
 
-  <section id="sectionVibe">
-    <h2>✉️ Vibe</h2>
-    <div class="vibe-btns">
-      <button class="vibe-btn" id="btnDemande">✉️ Demander à Vibe</button>
-      <button class="vibe-btn" id="btnRelance">🔁 Relancer le point du jour</button>
-    </div>
-    <div class="req-ok" id="reqOk">✓ Envoyé — le prochain passage la traitera</div>
-    <div id="formReq">
-      <textarea id="reqTexte" placeholder="Ta demande en une phrase… (relance, question, action)"></textarea>
-      <button class="envoyer" id="reqEnvoyer">Envoyer à Vibe</button>
-    </div>
-    <div id="listeReqs"></div>
-  </section>
 </main>
 
 <footer>
@@ -174,7 +143,6 @@
 // ── Configuration Notion ──
 var NOTION_TOKEN = "ntn_U33239265549KjTVgojVoR5vXXTiwasTSIVlwp5eYHT7C0";
 var DB_ID = "f9028b91-b5c3-43f8-b2f1-935ac1e6a275";
-var REQ_DB_ID = "7d6e886191f54a20963d32d3e78b5f18";
 var API = "https://api.notion.com/v1";
 
 // ── Liste de secours (régénérée chaque matin à 6h30) ──
@@ -358,99 +326,6 @@ function construireFiltres() {
 
 document.getElementById("btnTraitees").addEventListener("click", function () { afficherTraitees = !afficherTraitees; rendre(); });
 
-// ── Boîte à requêtes Vibe ──
-function headersNotion() {
-  return { "Authorization": "Bearer " + NOTION_TOKEN, "Notion-Version": "2022-06-28", "Content-Type": "application/json" };
-}
-function creerRequete(texte, type) {
-  var titre = texte.length > 60 ? texte.slice(0, 57) + "…" : texte;
-  return fetch(API + "/pages", {
-    method: "POST",
-    headers: headersNotion(),
-    body: JSON.stringify({
-      parent: { database_id: REQ_DB_ID },
-      properties: {
-        "Titre": { title: [{ text: { content: titre } }] },
-        "Requête": { rich_text: [{ text: { content: texte } }] },
-        "Type": { select: { name: type } },
-        "Statut": { select: { name: "En attente" } },
-        "Date": { date: { start: aujourdhu() } }
-      }
-    })
-  });
-}
-function chargerRequetes() {
-  return fetch(API + "/databases/" + REQ_DB_ID + "/query", {
-    method: "POST",
-    headers: headersNotion(),
-    body: JSON.stringify({ page_size: 50, filter: { property: "Date", date: { equals: aujourdhu() } } })
-  }).then(function (res) { return res.ok ? res.json() : Promise.reject(new Error("API " + res.status)); })
-    .then(function (data) {
-      return data.results.map(function (p) {
-        var pr = p.properties || {};
-        function rt(prop) { try { return pr[prop].rich_text.map(function (r) { return r.plain_text; }).join(""); } catch (e) { return ""; } }
-        return {
-          titre: (function () { try { return pr["Titre"].title[0].plain_text; } catch (e) { return "Requête"; } })(),
-          requete: rt("Requête"),
-          reponse: rt("Réponse"),
-          statut: (function () { try { return pr["Statut"].select.name; } catch (e) { return "En attente"; } })(),
-          type: (function () { try { return pr["Type"].select.name; } catch (e) { return "Question"; } })()
-        };
-      });
-    });
-}
-function rendreRequetes(reqs) {
-  var div = document.getElementById("listeReqs");
-  div.innerHTML = "";
-  reqs.forEach(function (r) {
-    var s = r.statut === "Traitée" ? ["fait", "✓ Traitée"] : r.statut === "En cours" ? ["encours", "⏳ En cours"] : ["attente", "⏳ En attente"];
-    var el = document.createElement("div");
-    el.className = "req";
-    el.innerHTML = '<div class="req-titre"><span></span><span class="req-statut ' + s[0] + '">' + s[1] + '</span></div>' +
-      (r.requete && r.requete !== r.titre ? '<div class="req-texte"></div>' : "") +
-      (r.reponse ? '<div class="req-rep"></div>' : "");
-    el.querySelector("span").textContent = r.titre;
-    if (r.requete && r.requete !== r.titre) el.querySelector(".req-texte").textContent = r.requete;
-    if (r.reponse) el.querySelector(".req-rep").textContent = "Vibe : " + r.reponse;
-    div.appendChild(el);
-  });
-}
-function flashOk() {
-  var ok = document.getElementById("reqOk");
-  ok.style.display = "block";
-  setTimeout(function () { ok.style.display = "none"; }, 4000);
-}
-document.getElementById("btnDemande").addEventListener("click", function () {
-  var f = document.getElementById("formReq");
-  f.style.display = f.style.display === "block" ? "none" : "block";
-  if (f.style.display === "block") document.getElementById("reqTexte").focus();
-});
-document.getElementById("reqEnvoyer").addEventListener("click", function () {
-  var t = document.getElementById("reqTexte").value.trim();
-  if (!t) return;
-  var b = this;
-  b.textContent = "Envoi…";
-  creerRequete(t, t.toLowerCase().indexOf("relance") === 0 ? "Relance point du jour" : "Question").then(function (res) {
-    if (res.ok) {
-      document.getElementById("reqTexte").value = "";
-      document.getElementById("formReq").style.display = "none";
-      flashOk();
-      rafraichirRequetes();
-    } else { b.textContent = "Échec — réessaie"; }
-    b.textContent = "Envoyer à Vibe";
-  });
-});
-document.getElementById("btnRelance").addEventListener("click", function () {
-  var b = this;
-  b.textContent = "Envoi…";
-  creerRequete("Relance le point du jour", "Relance point du jour").then(function (res) {
-    b.textContent = "🔁 Relancer le point du jour";
-    if (res.ok) { flashOk(); rafraichirRequetes(); }
-  });
-});
-function rafraichirRequetes() {
-  chargerRequetes().then(rendreRequetes).catch(function () {});
-}
 
 (async function init() {
   document.getElementById("dateTitre").textContent = dateFr();
@@ -463,7 +338,6 @@ function rafraichirRequetes() {
   }
   construireFiltres();
   rendre();
-  rafraichirRequetes();
 })();
 </script>
 </body>
