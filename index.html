@@ -403,9 +403,9 @@ function carte(t) {
     (t.maps ? '<a class="maps" target="_blank" rel="noopener">🗺 Itinéraire Maps</a>' : "") +
     '</div></div>';
 
-  // Question
+  // Question : toujours visible sur la carte
   if (t.question) {
-    html += '<div class="question"' + (o.question ? ' style="display:block"' : "") + '>' +
+    html += '<div class="question" style="display:block">' +
       '<p class="q-texte"></p>';
     if (t.choix.length) {
       html += '<div class="q-choix"></div>';
