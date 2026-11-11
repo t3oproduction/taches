@@ -57,6 +57,8 @@
   .card.erreur .syncerr { display: block; }
 
   .resume-carte { font-size: 13px; line-height: 1.45; color: var(--text); margin-top: 8px; }
+  .ecouter-btn { margin-top: 6px; border: 1px solid var(--border); background: var(--card2); color: var(--text); font-size: 12px; padding: 5px 10px; border-radius: 8px; }
+  .ecouter-btn.lit { background: var(--accent); color: #fff; border-color: var(--accent); }
   .lien-fiche { flex: 0 0 auto; align-self: flex-start; text-decoration: none; font-size: 16px; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--border); }
   .en-savoir { display: block; width: 100%; background: #fafafa; border: 1px solid var(--border); color: var(--blue); font-size: 12px; font-weight: 700; margin-top: 8px; padding: 8px; border-radius: 10px; cursor: pointer; }
   .detail { display: none; margin-top: 10px; padding: 10px 12px; background: #fafafa; border-radius: 12px; border: 1px solid var(--border); }
@@ -380,6 +382,29 @@ function creerMicro(container, getTextarea, onFinal) {
   return b;
 }
 
+// ── Écouter (synthèse vocale) ──
+var boutonLit = null;
+function ecouterSupporte() { return !!window.speechSynthesis; }
+function arreterLecture() {
+  if (ecouterSupporte()) { try { window.speechSynthesis.cancel(); } catch (e) {} }
+  if (boutonLit) { boutonLit.classList.remove("lit"); boutonLit.textContent = "🔊 Écouter le résumé"; boutonLit = null; }
+}
+function lireResume(t, b) {
+  if (boutonLit === b) { arreterLecture(); return; }
+  arreterLecture();
+  var u = new SpeechSynthesisUtterance((t.titre ? t.titre + ". " : "") + (t.resume || ""));
+  u.lang = "fr-FR";
+  u.rate = 1;
+  var voix = window.speechSynthesis.getVoices ? window.speechSynthesis.getVoices() : [];
+  for (var i = 0; i < voix.length; i++) { if (voix[i].lang && voix[i].lang.indexOf("fr") === 0) { u.voice = voix[i]; break; } }
+  u.onend = function () { if (boutonLit === b) arreterLecture(); };
+  u.onerror = function () { if (boutonLit === b) arreterLecture(); };
+  boutonLit = b;
+  b.classList.add("lit");
+  b.textContent = "⏸ Arrêter";
+  window.speechSynthesis.speak(u);
+}
+
 // ── Rendu des cartes ──
 function carte(t) {
   var e = t.etat;
@@ -395,6 +420,7 @@ function carte(t) {
 
   // Résumé d'une phrase : toujours visible, sans clic
   html += '<p class="resume-carte"></p>';
+  if (ecouterSupporte()) html += '<button class="ecouter-btn">🔊 Écouter le résumé</button>';
   // En savoir plus (bouton) : liens Notion et Maps
   html += '<button class="en-savoir">' + (o.savoir ? "▴ En savoir moins" : "▾ En savoir plus") + '</button>';
   html += '<div class="detail"' + (o.savoir ? ' style="display:block"' : "") + '>' +
@@ -448,6 +474,11 @@ function carte(t) {
 
   // En savoir plus
   div.querySelector(".resume-carte").textContent = t.resume || "";
+  var bEcouter = div.querySelector(".ecouter-btn");
+  if (bEcouter) {
+    if (!t.resume) bEcouter.style.display = "none";
+    bEcouter.addEventListener("click", function () { lireResume(t, bEcouter); });
+  }
   div.querySelector(".en-savoir").addEventListener("click", function () {
     ouvertes[t.id] = ouvertes[t.id] || {};
     ouvertes[t.id].savoir = !ouvertes[t.id].savoir;
@@ -531,6 +562,7 @@ function majStatusSync() {
 }
 
 function rendre() {
+  arreterLecture();
   var actives = taches.filter(function (t) { return !t.etat.fait && !t.etat.nonPertinent && !t.etat.plusTard; });
   var traitees = taches.filter(function (t) { return t.etat.fait || t.etat.nonPertinent || t.etat.plusTard; });
   var faites = taches.filter(function (t) { return t.etat.fait; });
