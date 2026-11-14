@@ -183,24 +183,13 @@ var API = "https://api.notion.com/v1";
 
 // ── Liste de secours (régénérée chaque matin à 6h30) ──
 var TACHES_SECOURS = [
-  { id: "4070c61f181a8128928ee011c5a60fbb", titre: "Vérifier le message Chorus Pro du 22/10 sur le portail", domaine: "Administration", priorite: "A", orig: { fait: false, plusTard: false, nonPertinent: false } },
-  { id: "40c0c61f181a8133a9e1cfafcdd082fb", titre: "3 photos avant-pendant-après", domaine: "Communication et RP", priorite: "A", orig: { fait: false, plusTard: false, nonPertinent: false } },
-  { id: "4080c61f181a81da9addf4f045939d24", titre: "Nettoyer compta perso/T3O", domaine: "Administration", priorite: "B", orig: { fait: false, plusTard: false, nonPertinent: false } },
-  { id: "4070c61f181a8197bab8c0614b78daf4", titre: "Nettoyer le doublon CRM sur le Drive (garder l'exemplaire de DIFFUSION)", domaine: "Administration", priorite: "B", orig: { fait: false, plusTard: false, nonPertinent: true } },
-  { id: "40f0c61f181a815d8f3bf6cca5acbf06", titre: "Facture L'Accolade", domaine: "Administration", priorite: "B", orig: { fait: false, plusTard: false, nonPertinent: true } },
-  { id: "40c0c61f181a81fd8783e16c2cd2ce11", titre: "Liker 3 comptes", domaine: "Communication et RP", priorite: "B", orig: { fait: true, plusTard: false, nonPertinent: false } },
-  { id: "4130c61f181a815394aff0ba979e6317", titre: "Redimensionner photos Instagram", domaine: "Communication et RP", priorite: "B", orig: { fait: false, plusTard: false, nonPertinent: false } },
-  { id: "4140c61f181a81b9919cd2acc744e033", titre: "Chapeau Auterive : lieu", domaine: "Diffusion", priorite: "B", orig: { fait: true, plusTard: false, nonPertinent: false } },
-  { id: "4140c61f181a8143bcd6cb19ee52d4a7", titre: "Vérifier envoi Chameau Malin", domaine: "Diffusion", priorite: "B", orig: { fait: true, plusTard: false, nonPertinent: false } },
-  { id: "4140c61f181a8139b3a8cf8cc51295c9", titre: "En passant : @ttitude Albi", domaine: "Diffusion", priorite: "B", orig: { fait: false, plusTard: false, nonPertinent: true } },
-  { id: "4140c61f181a816f800bd0b953507f4c", titre: "En passant : Clair-Obscur Albi", domaine: "Diffusion", priorite: "C", orig: { fait: false, plusTard: false, nonPertinent: true } },
-  { id: "4140c61f181a8183aaeef95fbab2d85f", titre: "En passant à Albi : @ttitude + Clair-Obscur", domaine: "Diffusion", priorite: "B", orig: { fait: false, plusTard: false, nonPertinent: false } },
-  { id: "4080c61f181a81ba9024fc2e2e3199fc", titre: "Dons : reçu papier après représentation", domaine: "Administration", priorite: "C", orig: { fait: false, plusTard: false, nonPertinent: false } },
-  { id: "4100c61f181a81bc9b0bea7e0b609772", titre: "Archiver contrat n°43", domaine: "Administration", priorite: "C", orig: { fait: false, plusTard: false, nonPertinent: true } },
-  { id: "4140c61f181a81e6b73dc3c1e66a9dfa", titre: "Évaluer : témoignages vidéo", domaine: "Strategie", priorite: "C", orig: { fait: false, plusTard: false, nonPertinent: true } },
-  { id: "4140c61f181a810fbb41c555c16b45f5", titre: "Où vas-tu : 3 prochains jours ?", domaine: "Diffusion", priorite: "C", orig: { fait: true, plusTard: false, nonPertinent: false } },
-  { id: "40c0c61f181a819fb556cac55a9cfeff", titre: "Sélectionner 3 belles photos", domaine: "Production", priorite: "C", orig: { fait: false, plusTard: false, nonPertinent: true } },
-  { id: "40c0c61f181a81de9ff0d4d9513f6382", titre: "Alimenter CRM Personnes", domaine: "Communication et RP", priorite: "C", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4080c61f181a81ba9024fc2e2e3199fc", titre: "Dons : reçu papier après représentation", domaine: "Administration", priorite: "C", orig: { fait: false, plusTard: true, nonPertinent: false } },
+  { id: "40c0c61f181a81809f74e6e17403e3e3", titre: "Écris ton post : nos voix", domaine: "Communication et RP", priorite: "A", orig: { fait: false, plusTard: false, nonPertinent: true } },
+  { id: "4100c61f181a81fab88dcec90dd66b1a", titre: "En passant : Auterive samedi", domaine: "Diffusion", priorite: "B", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4130c61f181a81fdad23d5dd86e97639", titre: "Regarde ton post de jeudi", domaine: "Communication et RP", priorite: "B", orig: { fait: false, plusTard: false, nonPertinent: true } },
+  { id: "4150c61f181a816982e7ef5651e231d8", titre: "Où vas-tu : samedi 14/11", domaine: "Diffusion", priorite: "C", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4150c61f181a81b9b43df6606997c892", titre: "Allegora : passer dire la date", domaine: "Diffusion", priorite: "B", orig: { fait: false, plusTard: true, nonPertinent: false } },
+  { id: "4150c61f181a81cd89eacb346770ede9", titre: "En passant : Études Mirail + Renaissance", domaine: "Diffusion", priorite: "B", orig: { fait: false, plusTard: true, nonPertinent: false } }
 ];
 
 var ORDRE = { A: 0, B: 1, C: 2 };
