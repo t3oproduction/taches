@@ -183,8 +183,36 @@ var API = "https://api.notion.com/v1";
 
 // ── Liste de secours (régénérée chaque matin à 6h30) ──
 var TACHES_SECOURS = [
-  { id: "4130c61f181a813ca9aed038bfa737a5", titre: "Noter une pensée", domaine: "Communication et RP", priorite: "B", orig: { fait: false, plusTard: false, nonPertinent: true } },
-  { id: "4170c61f181a81bc91b8cee3d842199b", titre: "Chorus Pro : message du 22/10", domaine: "Administration", priorite: "A", orig: { fait: false, plusTard: false, nonPertinent: false } }
+  { id: "41a0c61f181a8142a40edf33f999d073", titre: "Où vas-tu : aujourd'hui 16/11", domaine: "Diffusion", priorite: "B", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "41a0c61f181a8145b9c7d80ae9699cfa", titre: "Bram : La Sauce Bramaise ?", domaine: "Diffusion", priorite: "A", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4170c61f181a8110a236d666c629aec4", titre: "Alimenter CRM : Godeman", domaine: "Communication et RP", priorite: "C", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4170c61f181a811dadd7c3c1d3880149", titre: "Relance Calmy : oui ou non ?", domaine: "Diffusion", priorite: "B", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4170c61f181a814087cec92d53b4171d", titre: "Payer facture Qonto 350 €", domaine: "Administration", priorite: "A", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4170c61f181a816d85d6f11e19447d6a", titre: "Relance Libellis : oui ou non ?", domaine: "Diffusion", priorite: "B", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4170c61f181a819289ceec02db8c1fdc", titre: "Dépliants CcV : stock ?", domaine: "Production", priorite: "B", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4170c61f181a819a91d1e811db484b61", titre: "Facture L'Accolade : envoyée ?", domaine: "Administration", priorite: "A", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4170c61f181a81d58a55ff6824a376cc", titre: "Relances Carcassonne : oui ou non ?", domaine: "Diffusion", priorite: "B", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4170c61f181a81dfafaffea092cb57fa", titre: "Bilans : pièces manquantes ?", domaine: "Administration", priorite: "C", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4170c61f181a81eaa105c689a4138909", titre: "Chorus Pro : consulter portail", domaine: "Administration", priorite: "A", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4170c61f181a81ef84a9e2e47b7354ba", titre: "Évaluer : 2 dates payées/semaine ?", domaine: "Strategie", priorite: "B", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4170c61f181a81bc91b8cee3d842199b", titre: "Chorus Pro : message du 22/10", domaine: "Administration", priorite: "A", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4150c61f181a8134af60f6ea6823cbc0", titre: "Relance Breithaupt : ta version", domaine: "Diffusion", priorite: "C", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4150c61f181a8176b364cbe525ca7d5c", titre: "Chorus Pro : message du 22/10", domaine: "Administration", priorite: "C", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4150c61f181a81019c66fe6d7b281159", titre: "Nettoyer le Drive : 2 fichiers", domaine: "Administration", priorite: "B", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4150c61f181a813ca6bec8b3a025e6f0", titre: "Grappe Lauragais : plan de tournée", domaine: "Diffusion", priorite: "B", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4150c61f181a81678f8dcf17a053f4e2", titre: "Évaluer : nouvelle date Accolade", domaine: "Strategie", priorite: "C", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4150c61f181a818e9edad5007171eee2", titre: "Relances Libellis et Calmy", domaine: "Diffusion", priorite: "B", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4150c61f181a81c28548f8dcf2d1a340", titre: "Calendrier représentations : corriger", domaine: "Production", priorite: "C", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4150c61f181a81fba28dd53584a559ee", titre: "Remercier L'Accolade", domaine: "Diffusion", priorite: "B", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4150c61f181a81d3af22e340d568eba9", titre: "Brouillon Études du Mirail ?", domaine: "Diffusion", priorite: "A", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "40f0c61f181a81e992c5ca35ef57a340", titre: "Subvention Venerque : formulaire", domaine: "Administration", priorite: "C", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4080c61f181a81ac9f85fbd0d435361a", titre: "Coécrire modèles de mails", domaine: "Production", priorite: "B", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4080c61f181a81e1a168e6868d4cb30e", titre: "Dons : créer le compte HelloAsso", domaine: "Administration", priorite: "B", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4070c61f181a8128928ee011c5a60fbb", titre: "Vérifier le message Chorus Pro du 22/10 sur le portail", domaine: "Administration", priorite: "A", orig: { fait: false, plusTard: true, nonPertinent: false } },
+  { id: "4070c61f181a8145bf31e4e732dfa816", titre: "Courrier de réponse France Travail (litige AEM)", domaine: "", priorite: "A", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4070c61f181a8180995bfe35768eed0a", titre: "Relancer la mairie de Venerque (appel à projets — réponse demandée)", domaine: "", priorite: "A", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4070c61f181a8183b65dc8b9d9b8eee6", titre: "Préparer les invitations pour le 6/11 à L'Accolade (Carcassonne)", domaine: "", priorite: "B", orig: { fait: false, plusTard: false, nonPertinent: false } },
+  { id: "4070c61f181a81d48e5ddefa6a694f00", titre: "Relancer Marianne Munoz : programme annuel de la mairie (validation des dates pendant la Toussaint)", domaine: "", priorite: "C", orig: { fait: false, plusTard: false, nonPertinent: false } }
 ];
 
 var ORDRE = { A: 0, B: 1, C: 2 };
